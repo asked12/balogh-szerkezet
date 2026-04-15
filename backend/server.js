@@ -3,6 +3,8 @@ const cors = require('cors');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const compression = require('compression');
+const multer = require('multer');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -11,6 +13,18 @@ const PORT = process.env.PORT || 3000;
 app.use(compression());
 app.use(cors());
 app.use(express.json());
+// Admin védelem (a statikus fájlok elé)
+app.use('/admin.html', (req, res, next) => {
+    const auth = req.headers.authorization;
+    const expected = 'Basic ' + Buffer.from('admin:galeria').toString('base64');
+    if (auth === expected) return next();
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin"');
+    res.status(401).send('Hozzáférés megtagadva');
+});
+
+
+
+// Statikus fájlok
 app.use(express.static(path.join(__dirname, '../public'), { maxAge: '7d', etag: true, lastModified: true }));
 
 // ========== ADATBÁZIS VÁLASZTÁS (SQLite helyben, PostgreSQL Renderen) ==========
@@ -188,6 +202,23 @@ const transporter = nodemailer.createTransport({
 });
 const EMAIL_TO = process.env.EMAIL_TO || 'tomibt66@gmail.com';
 
+// Galéria mappa (a public/gallery mappában)
+const galleryDir = path.join(__dirname, '../public/gallery');
+if (!fs.existsSync(galleryDir)) {
+    fs.mkdirSync(galleryDir, { recursive: true });
+}
+
+// Multer beállítás – csak képek fogadása
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, galleryDir),
+    filename: (req, file, cb) => {
+        const unique = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        cb(null, unique + ext);
+    }
+});
+const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // max 5MB
+
 // ========== API ENDPOINTOK ==========
 
 app.get('/api/reviews', async (req, res) => {
@@ -278,6 +309,30 @@ app.get('/api/stats', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+
+// 1. Képek listájának lekérése (nyilvános)
+app.get('/api/gallery', (req, res) => {
+    fs.readdir(galleryDir, (err, files) => {
+        if (err) return res.status(500).json({ error: err.message });
+        const images = files.filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f));
+        res.json(images);
+    });
+});
+
+// 2. Kép feltöltése (admin)
+app.post('/api/upload', adminAuth, upload.single('image'), (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'Nincs fájl' });
+    res.json({ success: true, filename: req.file.filename });
+});
+
+// 3. Kép törlése (admin)
+app.delete('/api/gallery/:filename', adminAuth, (req, res) => {
+    const filePath = path.join(galleryDir, req.params.filename);
+    fs.unlink(filePath, (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
 });
 
 app.listen(PORT, () => {
