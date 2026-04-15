@@ -3,7 +3,6 @@ const cors = require('cors');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const compression = require('compression');
-const { Pool } = require('pg');
 require('dotenv').config();
 
 const app = express();
@@ -14,61 +13,162 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public'), { maxAge: '7d', etag: true, lastModified: true }));
 
-// PostgreSQL kapcsolat
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-});
+// ========== ADATBÁZIS VÁLASZTÁS (SQLite helyben, PostgreSQL Renderen) ==========
+let db;
 
-// Adatbázis inicializálás (táblák, alapértelmezett vélemények)
+if (process.env.DATABASE_URL) {
+    // PostgreSQL (Renderen)
+    const { Pool } = require('pg');
+    const pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+    });
+    db = {
+        query: (text, params) => pool.query(text, params),
+        get: (sql, params) => pool.query(sql, params).then(res => res.rows[0]),
+        all: (sql, params) => pool.query(sql, params).then(res => res.rows),
+        run: (sql, params) => pool.query(sql, params)
+    };
+    console.log('✅ PostgreSQL használata (Render)');
+} else {
+    // SQLite (helyi fejlesztés)
+    const sqlite3 = require('sqlite3').verbose();
+    const sqliteDb = new sqlite3.Database(path.join(__dirname, 'database.sqlite'));
+    db = {
+        query: (sql, params) => {
+            return new Promise((resolve, reject) => {
+                if (sql.toLowerCase().trim().startsWith('select')) {
+                    sqliteDb.all(sql, params, (err, rows) => {
+                        if (err) reject(err);
+                        else resolve({ rows });
+                    });
+                } else {
+                    sqliteDb.run(sql, params, function(err) {
+                        if (err) reject(err);
+                        else resolve({ rows: [], lastID: this.lastID });
+                    });
+                }
+            });
+        },
+        get: (sql, params) => new Promise((resolve, reject) => {
+            sqliteDb.get(sql, params, (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        }),
+        all: (sql, params) => new Promise((resolve, reject) => {
+            sqliteDb.all(sql, params, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        }),
+        run: (sql, params) => new Promise((resolve, reject) => {
+            sqliteDb.run(sql, params, function(err) {
+                if (err) reject(err);
+                else resolve({ lastID: this.lastID });
+            });
+        }),
+        serialize: (fn) => sqliteDb.serialize(fn)
+    };
+    console.log('✅ SQLite használata (helyi fejlesztés)');
+}
+
+// ========== ADATBÁZIS INICIALIZÁLÁS ==========
 async function initDB() {
     try {
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS reviews (
-                id SERIAL PRIMARY KEY,
-                name TEXT NOT NULL,
-                service TEXT NOT NULL,
-                stars INTEGER NOT NULL,
-                text TEXT NOT NULL,
-                date TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        `);
-        console.log('✅ reviews tábla ellenőrizve/létrehozva');
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS contacts (
-                id SERIAL PRIMARY KEY,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL,
-                phone TEXT NOT NULL,
-                message TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        `);
-        console.log('✅ contacts tábla ellenőrizve/létrehozva');
-
-        const res = await pool.query('SELECT COUNT(*) FROM reviews');
-        const count = parseInt(res.rows[0].count);
-        console.log('Jelenlegi vélemények száma:', count);
-
-        if (count === 0) {
-            const defaults = [
-                { name: "Kovács János", service: "Új épületek", stars: 5, text: "Kulcsrakész házunk tökéletes lett. Nagyon elégedettek vagyunk a munkájukkal!", date: "2026.03.15" },
-                { name: "Nagy Anna", service: "Felújítás", stars: 5, text: "A felújítás gyors és precíz volt. Az otthonunk most sokkal modernebb.", date: "2026.02.28" },
-                { name: "Tóth Péter", service: "Tervezés", stars: 4, text: "Segítőkész tervezők, gyors engedélyeztetés. Köszönjük!", date: "2026.03.01" },
-                { name: "Szabó Mária", service: "Új épületek", stars: 5, text: "Csak ajánlani tudom őket! Profi munka, pontos határidők.", date: "2026.03.10" },
-                { name: "Kiss Gábor", service: "Felújítás", stars: 5, text: "A fürdőszoba felújítás hibátlan lett. Mindenkinek ajánlom!", date: "2026.02.20" },
-                { name: "Varga Edit", service: "Tervezés", stars: 5, text: "Gyors és pontos munkát végeztek, az engedélyeztetés zökkenőmentes volt.", date: "2026.03.05" }
-            ];
-            for (const r of defaults) {
-                await pool.query(
-                    'INSERT INTO reviews (name, service, stars, text, date) VALUES ($1, $2, $3, $4, $5)',
-                    [r.name, r.service, r.stars, r.text, r.date]
-                );
-                console.log(`✅ Beszúrva: ${r.name}`);
+        if (process.env.DATABASE_URL) {
+            // PostgreSQL táblák
+            await db.query(`
+                CREATE TABLE IF NOT EXISTS reviews (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    service TEXT NOT NULL,
+                    stars INTEGER NOT NULL,
+                    text TEXT NOT NULL,
+                    date TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            `);
+            await db.query(`
+                CREATE TABLE IF NOT EXISTS contacts (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    phone TEXT NOT NULL,
+                    message TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            `);
+            const res = await db.query('SELECT COUNT(*) FROM reviews');
+            const count = parseInt(res.rows[0].count);
+            console.log('Jelenlegi vélemények száma (PG):', count);
+            if (count === 0) {
+                const defaults = [
+                    { name: "Kovács János", service: "Új épületek", stars: 5, text: "Kulcsrakész házunk tökéletes lett. Nagyon elégedettek vagyunk a munkájukkal!", date: "2026.03.15" },
+                    { name: "Nagy Anna", service: "Felújítás", stars: 5, text: "A felújítás gyors és precíz volt. Az otthonunk most sokkal modernebb.", date: "2026.02.28" },
+                    { name: "Tóth Péter", service: "Tervezés", stars: 4, text: "Segítőkész tervezők, gyors engedélyeztetés. Köszönjük!", date: "2026.03.01" },
+                    { name: "Szabó Mária", service: "Új épületek", stars: 5, text: "Csak ajánlani tudom őket! Profi munka, pontos határidők.", date: "2026.03.10" },
+                    { name: "Kiss Gábor", service: "Felújítás", stars: 5, text: "A fürdőszoba felújítás hibátlan lett. Mindenkinek ajánlom!", date: "2026.02.20" },
+                    { name: "Varga Edit", service: "Tervezés", stars: 5, text: "Gyors és pontos munkát végeztek, az engedélyeztetés zökkenőmentes volt.", date: "2026.03.05" }
+                ];
+                for (const r of defaults) {
+                    await db.query(
+                        'INSERT INTO reviews (name, service, stars, text, date) VALUES ($1, $2, $3, $4, $5)',
+                        [r.name, r.service, r.stars, r.text, r.date]
+                    );
+                    console.log(`✅ Beszúrva: ${r.name}`);
+                }
+                console.log('✅ Alapértelmezett vélemények betöltve');
             }
-            console.log('✅ Alapértelmezett vélemények betöltve');
+        } else {
+            // SQLite táblák
+            db.serialize(() => {
+                db.run(`CREATE TABLE IF NOT EXISTS reviews (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    service TEXT NOT NULL,
+                    stars INTEGER NOT NULL,
+                    text TEXT NOT NULL,
+                    date TEXT NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )`, (err) => {
+                    if (err) console.error('Hiba a reviews tábla létrehozásakor:', err.message);
+                    else console.log('✅ reviews tábla ellenőrizve/létrehozva');
+                });
+                db.run(`CREATE TABLE IF NOT EXISTS contacts (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    phone TEXT NOT NULL,
+                    message TEXT NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )`, (err) => {
+                    if (err) console.error('Hiba a contacts tábla létrehozásakor:', err.message);
+                    else console.log('✅ contacts tábla ellenőrizve/létrehozva');
+                });
+                db.get('SELECT COUNT(*) as count FROM reviews', (err, row) => {
+                    if (err) return console.error('Hiba a lekéréskor:', err.message);
+                    console.log('Jelenlegi vélemények száma:', row?.count || 0);
+                    if (!row || row.count === 0) {
+                        const defaults = [
+                            { name: "Kovács János", service: "Új épületek", stars: 5, text: "Kulcsrakész házunk tökéletes lett. Nagyon elégedettek vagyunk a munkájukkal!", date: "2026.03.15" },
+                            { name: "Nagy Anna", service: "Felújítás", stars: 5, text: "A felújítás gyors és precíz volt. Az otthonunk most sokkal modernebb.", date: "2026.02.28" },
+                            { name: "Tóth Péter", service: "Tervezés", stars: 4, text: "Segítőkész tervezők, gyors engedélyeztetés. Köszönjük!", date: "2026.03.01" },
+                            { name: "Szabó Mária", service: "Új épületek", stars: 5, text: "Csak ajánlani tudom őket! Profi munka, pontos határidők.", date: "2026.03.10" },
+                            { name: "Kiss Gábor", service: "Felújítás", stars: 5, text: "A fürdőszoba felújítás hibátlan lett. Mindenkinek ajánlom!", date: "2026.02.20" },
+                            { name: "Varga Edit", service: "Tervezés", stars: 5, text: "Gyors és pontos munkát végeztek, az engedélyeztetés zökkenőmentes volt.", date: "2026.03.05" }
+                        ];
+                        defaults.forEach(r => {
+                            db.run('INSERT INTO reviews (name, service, stars, text, date) VALUES (?, ?, ?, ?, ?)',
+                                [r.name, r.service, r.stars, r.text, r.date], function(err3) {
+                                    if (err3) console.error('Hiba beszúráskor:', err3.message);
+                                    else console.log(`✅ Beszúrva: ${r.name}`);
+                                });
+                        });
+                        console.log('✅ Alapértelmezett vélemények betöltése folyamatban...');
+                    }
+                });
+            });
         }
     } catch (err) {
         console.error('DB init error:', err);
@@ -92,8 +192,14 @@ const EMAIL_TO = process.env.EMAIL_TO || 'tomibt66@gmail.com';
 
 app.get('/api/reviews', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM reviews ORDER BY created_at DESC');
-        res.json(result.rows);
+        let rows;
+        if (process.env.DATABASE_URL) {
+            const result = await db.query('SELECT * FROM reviews ORDER BY created_at DESC');
+            rows = result.rows;
+        } else {
+            rows = await db.all('SELECT * FROM reviews ORDER BY created_at DESC', []);
+        }
+        res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -103,11 +209,21 @@ app.post('/api/reviews', async (req, res) => {
     const { name, service, stars, text } = req.body;
     const date = new Date().toLocaleDateString('hu-HU');
     try {
-        const result = await pool.query(
-            'INSERT INTO reviews (name, service, stars, text, date) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-            [name, service, stars, text, date]
-        );
-        res.json({ id: result.rows[0].id, success: true });
+        let id;
+        if (process.env.DATABASE_URL) {
+            const result = await db.query(
+                'INSERT INTO reviews (name, service, stars, text, date) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+                [name, service, stars, text, date]
+            );
+            id = result.rows[0].id;
+        } else {
+            const result = await db.run(
+                'INSERT INTO reviews (name, service, stars, text, date) VALUES (?, ?, ?, ?, ?)',
+                [name, service, stars, text, date]
+            );
+            id = result.lastID;
+        }
+        res.json({ id, success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -116,10 +232,17 @@ app.post('/api/reviews', async (req, res) => {
 app.post('/api/contact', async (req, res) => {
     const { name, email, phone, message } = req.body;
     try {
-        await pool.query(
-            'INSERT INTO contacts (name, email, phone, message) VALUES ($1, $2, $3, $4)',
-            [name, email, phone, message]
-        );
+        if (process.env.DATABASE_URL) {
+            await db.query(
+                'INSERT INTO contacts (name, email, phone, message) VALUES ($1, $2, $3, $4)',
+                [name, email, phone, message]
+            );
+        } else {
+            await db.run(
+                'INSERT INTO contacts (name, email, phone, message) VALUES (?, ?, ?, ?)',
+                [name, email, phone, message]
+            );
+        }
         try {
             await transporter.sendMail({
                 from: `"Balogh Szerkezet" <${process.env.SMTP_USER}>`,
@@ -140,17 +263,24 @@ app.post('/api/contact', async (req, res) => {
 
 app.get('/api/stats', async (req, res) => {
     try {
-        const result = await pool.query('SELECT COUNT(*) as total_reviews, AVG(stars) as avg_rating FROM reviews');
-        const row = result.rows[0];
-        res.json({
-            total_reviews: parseInt(row.total_reviews) || 0,
-            avg_rating: (parseFloat(row.avg_rating) || 0).toFixed(1)
-        });
+        let total_reviews, avg_rating;
+        if (process.env.DATABASE_URL) {
+            const result = await db.query('SELECT COUNT(*) as total_reviews, AVG(stars) as avg_rating FROM reviews');
+            const row = result.rows[0];
+            total_reviews = parseInt(row.total_reviews) || 0;
+            avg_rating = (parseFloat(row.avg_rating) || 0).toFixed(1);
+        } else {
+            const row = await db.get('SELECT COUNT(*) as total_reviews, AVG(stars) as avg_rating FROM reviews', []);
+            total_reviews = row?.total_reviews || 0;
+            avg_rating = (row?.avg_rating || 0).toFixed(1);
+        }
+        res.json({ total_reviews, avg_rating });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
 app.listen(PORT, () => {
+    console.log(`✅ Backend fut: http://localhost:${PORT}`);
     console.log(`📧 Email beállítva: ${EMAIL_TO}`);
 });
