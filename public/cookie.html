@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie beállítások - Balogh Szerkezet 1977 Kft.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-gray-50 font-sans">
+
+    <nav class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-teal-700 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">
+                    <a href="index.html">🏗️</a>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-teal-900">Balogh Szerkezet 1977</h1>
+                    <p class="text-xs -mt-1 text-teal-600 font-medium">Kft.</p>
+                </div>
+            </div>
+            <a href="index.html" class="text-teal-700 hover:text-teal-900 font-semibold">
+                <i class="fa-solid fa-arrow-left"></i> Vissza a főoldalra
+            </a>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-6 py-16">
+        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-teal-900 mb-6">Cookie (süti) beállítások</h1>
+            <p class="text-gray-500 mb-8">Utolsó módosítás: 2026. április 12.</p>
+
+            <div class="space-y-8 text-gray-700">
+                <section>
+                    <h2 class="text-2xl font-bold text-teal-800 mb-3">Mik azok a cookie-k?</h2>
+                    <p>A cookie-k (sütik) kis szöveges fájlok, amelyeket a weboldal a látogató számítógépére vagy mobil
+                        eszközére helyez el.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-teal-800 mb-3">Milyen cookie-kat használunk?</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border rounded-xl">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="px-4 py-3 text-left">Típus</th>
+                                    <th class="px-4 py-3 text-left">Név</th>
+                                    <th class="px-4 py-3 text-left">Cél</th>
+                                    <th class="px-4 py-3 text-left">Élettartam</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y">
+                                <tr>
+                                    <td class="px-4 py-3">Alapvető</td>
+                                    <td class="px-4 py-3">session_id</td>
+                                    <td class="px-4 py-3">Munkamenet fenntartása</td>
+                                    <td class="px-4 py-3">Munkamenet végéig</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3">Analitikai</td>
+                                    <td class="px-4 py-3">_ga, _gid</td>
+                                    <td class="px-4 py-3">Google Analytics (látogatottság mérése)</td>
+                                    <td class="px-4 py-3">_ga: 2 év, _gid: 24 óra</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-teal-800 mb-3">Cookie-k kezelése</h2>
+                    <div class="bg-gray-50 rounded-2xl p-6 mt-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-bold text-teal-800">Alapvető cookie-k</h3>
+                                <p class="text-sm text-gray-500">A weboldal működéséhez szükségesek, nem tilthatók le.
+                                </p>
+                            </div>
+                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">Mindig aktív</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-bold text-teal-800">Analitikai cookie-k (Google Analytics)</h3>
+                                <p class="text-sm text-gray-500">Segítenek megérteni, hogyan használják a látogatók az
+                                    oldalt.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="analyticsCookie" class="sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-700">
+                                </div>
+                                <span class="ml-3 text-sm font-medium text-gray-700">Engedélyezve</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mt-6"><button id="saveCookieSettings"
+                            class="bg-teal-700 hover:bg-teal-800 text-white font-semibold px-6 py-3 rounded-2xl transition">Beállítások
+                            mentése</button></div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-teal-900 text-white py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-white/50">© 2026 Balogh Szerkezet 1977 Kft.</div>
+    </footer>
+
+    <script>
+        // Google Analytics betöltésének blokkolása – csak akkor, ha a felhasználó engedélyezte
+        function loadGoogleAnalytics() {
+            if (typeof gtag !== 'undefined') return;
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-JD0P8F10D6';
+            document.head.appendChild(script);
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', 'G-JD0P8F10D6');
+        }
+
+        function deleteAnalyticsCookies() {
+            document.cookie.split(';').forEach(c => {
+                const name = c.split('=')[0].trim();
+                if (name.includes('_ga') || name.includes('_gid')) {
+                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+                }
+            });
+        }
+
+        const checkbox = document.getElementById('analyticsCookie');
+        const saved = localStorage.getItem('analyticsConsent');
+
+        if (saved === 'true') {
+            checkbox.checked = true;
+            loadGoogleAnalytics();
+        } else {
+            checkbox.checked = false;
+        }
+
+        document.getElementById('saveCookieSettings').addEventListener('click', () => {
+            if (checkbox.checked) {
+                localStorage.setItem('analyticsConsent', 'true');
+                loadGoogleAnalytics();
+                alert('Analitikai cookie-k engedélyezve.');
+            } else {
+                localStorage.setItem('analyticsConsent', 'false');
+                deleteAnalyticsCookies();
+                alert('Analitikai cookie-k letiltva.');
+            }
+            location.reload();
+        });
+    </script>
+</body>
+
+</html>

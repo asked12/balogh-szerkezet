@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balogh Szerkezet 1977 Kft.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="font-sans">
+
+    <nav class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between flex-wrap gap-3">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-teal-700 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">
+                    <a href="index.html"><img src="images/image.jpg" alt="Balogh Szerkezet 1977 Kft."></a>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-teal-900">Balogh Szerkezet 1977</h1>
+                    <p class="text-xs -mt-1 text-teal-600 font-medium">Kft.</p>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-lg font-medium">
+                <a href="#szolgaltatasok" class="nav-link text-gray-700 hover:text-teal-700">Szolgáltatások</a>
+                <a href="#projektek" class="nav-link text-gray-700 hover:text-teal-700">Projektek</a>
+                <a href="#rolunk" class="nav-link text-gray-700 hover:text-teal-700">Rólunk</a>
+                <a href="#kapcsolat" class="nav-link text-gray-700 hover:text-teal-700">Kapcsolat</a>
+                <a href="#ertekelesek" class="nav-link text-gray-700 hover:text-teal-700">Vélemények</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="tel:+36705501339"
+                    class="hidden sm:flex items-center gap-2 bg-teal-700 hover:bg-teal-800 text-white px-6 py-3 rounded-2xl font-semibold">
+                    <i class="fa-solid fa-phone"></i> +36 70 550 1339
+                </a>
+                <button onclick="document.getElementById('kapcsolat').scrollIntoView({behavior:'smooth'})"
+                    class="hidden sm:flex bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-2xl font-semibold">
+                    <i class="fa-solid fa-paper-plane"></i> Ajánlatkérés
+                </button>
+                <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-teal-700">☰</button>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-6 py-6">
+            <div class="flex flex-col gap-4 text-lg">
+                <a href="#szolgaltatasok" onclick="toggleMobileMenu()">Szolgáltatások</a>
+                <a href="#projektek" onclick="toggleMobileMenu()">Projektek</a>
+                <a href="#rolunk" onclick="toggleMobileMenu()">Rólunk</a>
+                <a href="#kapcsolat" onclick="toggleMobileMenu()">Kapcsolat</a>
+                <a href="#ertekelesek" onclick="toggleMobileMenu()">Vélemények</a>
+                <a href="tel:+36705501339" class="bg-teal-700 text-white text-center py-3 rounded-2xl">+36 70 550
+                    1339</a>
+            </div>
+        </div>
+    </nav>
+
+    <header id="home" class="hero-bg text-white min-h-screen flex items-center">
+        <div class="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <div
+                    class="inline-flex items-center bg-white/20 backdrop-blur-md rounded-full px-6 py-3 mb-6 text-sm font-semibold">
+                    <span class="w-3 h-3 bg-green-400 rounded-full animate-pulse mr-2"></span>
+                    45+ ÉV TAPASZTALAT • 120+ PROJEKT
+                </div>
+                <h1 class="text-6xl md:text-7xl font-bold leading-none mb-6">Építjük a<br>te jövőd otthonát</h1>
+                <p class="text-2xl text-white/90 mb-10">Generálkivitelezés • Felújítás • Tervezés<br><span
+                        class="font-bold">Minden munkára 5 év garancia</span></p>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="document.getElementById('kapcsolat').scrollIntoView({behavior:'smooth'})"
+                        class="bg-white text-teal-900 hover:bg-amber-400 hover:text-white text-xl font-semibold px-10 py-6 rounded-3xl flex items-center gap-3">
+                        <i class="fa-solid fa-arrow-right"></i> INGYENES ÁRAJÁNLAT
+                    </button>
+                </div>
+            </div>
+            <div class="hidden md:block relative">
+                <div class="bg-white/10 backdrop-blur-3xl rounded-3xl p-8 border border-white/30">
+                    <div class="bg-white text-teal-900 rounded-3xl p-6 text-center">
+                        <div class="text-5xl font-bold mb-2">2026</div>
+                        <div class="flex justify-center gap-8 mt-4">
+                            <div>
+                                <div class="text-3xl font-bold text-teal-600" id="totalReviewsDisplay">0</div>
+                                <div class="text-teal-700">vélemény</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-teal-600" id="avgRatingDisplay">0</div>
+                                <div class="text-teal-700">átlag</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="szolgaltatasok" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16"><span
+                    class="px-6 py-2 bg-teal-100 text-teal-700 rounded-full text-sm font-semibold">SZOLGÁLTATÁSOK</span>
+                <h2 class="text-5xl font-bold text-teal-900 mt-4">Mit kínálunk?</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-3xl overflow-hidden shadow-xl card-hover">
+                    <div class="h-60 bg-cover" style="background-image:url('https://picsum.photos/id/1016/800/600')">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-3xl font-bold">Új épületek</h3>
+                        <p class="text-gray-600 my-4">Lakóházak, társasházak, irodák kulcsrakész kivitelezése.</p><a
+                            href="epuletek.html" class="text-teal-700 font-semibold">Részletek →</a>
+                    </div>
+                </div>
+                <div class="bg-white rounded-3xl overflow-hidden shadow-xl card-hover">
+                    <div class="h-60 bg-cover" style="background-image:url('https://picsum.photos/id/160/800/600')">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-3xl font-bold">Felújítás</h3>
+                        <p class="text-gray-600 my-4">Lakások, házak, tetőtér-beépítés, modernizálás.</p><a
+                            href="felujitas.html" class="text-teal-700 font-semibold">Részletek →</a>
+                    </div>
+                </div>
+                <div class="bg-white rounded-3xl overflow-hidden shadow-xl card-hover">
+                    <div class="h-60 bg-cover" style="background-image:url('https://picsum.photos/id/201/800/600')">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-3xl font-bold">Tervezés</h3>
+                        <p class="text-gray-600 my-4">Építési engedélyeztetés, 3D tervezés, tanúsítvány.</p><a
+                            href="tervezes.html" class="text-teal-700 font-semibold">Részletek →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJEKTEK -->
+    <section id="projektek" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                <div>
+                    <span
+                        class="px-6 py-2 bg-amber-100 text-amber-700 text-sm font-semibold rounded-3xl">PROJEKTEK</span>
+                    <h2 class="text-5xl font-semibold tracking-tighter text-teal-900 mt-4">Legutóbbi munkáink</h2>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="group rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition">
+                    <div class="relative overflow-hidden">
+                        <img src="https://picsum.photos/id/1015/600/400"
+                            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                            alt="Modern családi ház">
+                        <div
+                            class="absolute top-4 right-4 bg-white text-teal-700 text-xs font-bold px-4 py-1 rounded-2xl">
+                            2025</div>
+                    </div>
+                    <div class="bg-white p-6">
+                        <h4 class="font-semibold text-xl">Modern családi ház – Budapest, Zugló</h4>
+                        <p class="text-sm text-gray-500">320 m² • Kulcsrakész • 8 hónap</p>
+                    </div>
+                </div>
+
+                <div class="group rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition">
+                    <div class="relative overflow-hidden">
+                        <img src="https://picsum.photos/id/160/600/400"
+                            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                            alt="Irodaház felújítás">
+                        <div
+                            class="absolute top-4 right-4 bg-white text-teal-700 text-xs font-bold px-4 py-1 rounded-2xl">
+                            2024</div>
+                    </div>
+                    <div class="bg-white p-6">
+                        <h4 class="font-semibold text-xl">Irodaház felújítás – Győr</h4>
+                        <p class="text-sm text-gray-500">1.200 m² • Belsőépítészet • 6 hónap</p>
+                    </div>
+                </div>
+
+                <div class="group rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition">
+                    <div class="relative overflow-hidden">
+                        <img src="https://picsum.photos/id/201/600/400"
+                            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                            alt="Tetőtér-beépítés">
+                        <div
+                            class="absolute top-4 right-4 bg-white text-teal-700 text-xs font-bold px-4 py-1 rounded-2xl">
+                            2025</div>
+                    </div>
+                    <div class="bg-white p-6">
+                        <h4 class="font-semibold text-xl">Tetőtér-beépítés – Szeged</h4>
+                        <p class="text-sm text-gray-500">180 m² • Energetikai korszerűsítés</p>
+                    </div>
+                </div>
+
+                <div class="group rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition">
+                    <div class="relative overflow-hidden">
+                        <img src="https://picsum.photos/id/1005/600/400"
+                            class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                            alt="Ipari csarnok">
+                        <div
+                            class="absolute top-4 right-4 bg-white text-teal-700 text-xs font-bold px-4 py-1 rounded-2xl">
+                            2024</div>
+                    </div>
+                    <div class="bg-white p-6">
+                        <h4 class="font-semibold text-xl">Ipari csarnok – Kecskemét</h4>
+                        <p class="text-sm text-gray-500">2.800 m² • Generálkivitelezés</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="rolunk" class="py-24 bg-teal-900 text-white">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div><span class="px-6 py-2 bg-white/20 rounded-full text-sm font-semibold">RÓLUNK</span>
+                <h2 class="text-5xl font-bold mt-4">45+ éve építjük Magyarországot</h2>
+                <p class="text-xl text-white/80 mt-6">Több mint 120 projektet adtunk át teljes elégedettséggel.</p>
+                <div class="grid grid-cols-3 gap-8 mt-12">
+                    <div>
+                        <div class="text-5xl font-bold text-amber-400">120+</div>
+                        <div>projekt</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-bold text-amber-400">45</div>
+                        <div>szakember</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-bold text-amber-400">5</div>
+                        <div>év garancia</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8"><i
+                    class="fa-solid fa-quote-left text-7xl text-amber-400 mb-6"></i>
+                <p class="text-2xl italic">"Professzionális, pontos, megbízható csapat!"</p>
+                <div class="mt-8"><strong>Balogh Sándor</strong><br><span class="text-white/70">ügyfél</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="kapcsolat" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+            <div>
+                <h2 class="text-5xl font-bold text-teal-900">Kérj árajánlatot!</h2>
+                <p class="text-xl text-gray-600 mt-4">24 órán belül válaszolunk.</p>
+                <div class="mt-8 space-y-6">
+                    <div class="flex gap-4"><i class="fa-solid fa-phone text-3xl text-teal-600"></i>
+                        <div>
+                            <div class="font-bold">Hívj minket</div><a href="tel:+36705501339"
+                                class="text-2xl text-teal-700">+36 70 550 1339</a>
+                        </div>
+                    </div>
+                    <div class="flex gap-4"><i class="fa-solid fa-envelope text-3xl text-teal-600"></i>
+                        <div>
+                            <div class="font-bold">Email</div><a href="mailto:balogh.sandor7704@gmail.com"
+                                class="text-teal-700">balogh.sandor7704@gmail.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-3xl shadow-2xl p-8">
+                <form id="contactForm"><input type="text" id="contactName" placeholder="Neved" required
+                        class="w-full p-4 border rounded-2xl mb-4"><input type="tel" id="contactPhone"
+                        placeholder="Telefon" required class="w-full p-4 border rounded-2xl mb-4"><input type="email"
+                        id="contactEmail" placeholder="Email" required
+                        class="w-full p-4 border rounded-2xl mb-4"><textarea id="contactMessage" rows="4"
+                        placeholder="Milyen munkáról van szó?" required
+                        class="w-full p-4 border rounded-2xl mb-4"></textarea><button type="submit"
+                        id="contactSubmitBtn"
+                        class="w-full bg-teal-700 text-white py-4 rounded-2xl font-bold text-xl">KÜLDÉS →</button>
+                    <div id="contactStatus" class="hidden mt-4 text-center"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="ertekelesek" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-12"><span
+                    class="px-6 py-2 bg-teal-100 text-teal-700 rounded-full text-sm font-semibold">VÉLEMÉNYEK</span>
+                <h2 class="text-5xl font-bold text-teal-900 mt-4">Mit mondanak ügyfeleink?</h2>
+                <p class="text-xl text-gray-500 mt-2">Írd meg a tapasztalatodat!</p>
+            </div>
+            <div class="bg-gray-50 rounded-3xl p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-6">Írj egy új értékelést</h3>
+                <form id="reviewForm">
+                    <div class="grid md:grid-cols-2 gap-4 mb-4"><input type="text" id="reviewName" placeholder="Neved"
+                            class="w-full p-4 border rounded-2xl" required><select id="reviewService"
+                            class="w-full p-4 border rounded-2xl">
+                            <option value="">Válassz szolgáltatást...</option>
+                            <option value="Új épületek">Új épületek</option>
+                            <option value="Felújítás">Felújítás</option>
+                            <option value="Tervezés">Tervezés</option>
+                        </select></div>
+                    <div class="mb-4"><label class="block mb-2 font-semibold">Értékelés:</label>
+                        <div class="flex gap-2" id="starRating"><span data-value="1" class="star">★</span><span
+                                data-value="2" class="star">★</span><span data-value="3" class="star">★</span><span
+                                data-value="4" class="star">★</span><span data-value="5" class="star">★</span></div>
+                        <input type="hidden" id="reviewStars" value="5">
+                    </div><textarea id="reviewText" rows="3" placeholder="Írd le a véleményed..."
+                        class="w-full p-4 border rounded-2xl mb-4" required></textarea><button type="submit"
+                        class="bg-teal-700 text-white px-8 py-3 rounded-2xl font-bold">Vélemény elküldése</button>
+                </form>
+            </div>
+            <div id="allReviewsContainer" class="grid md:grid-cols-3 gap-6"></div>
+            <div class="text-center mt-8"><button id="loadMoreBtn"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-8 py-3 rounded-2xl font-bold hidden">További
+                    vélemények</button></div>
+        </div>
+    </section>
+
+    <footer class="bg-teal-900 text-white">
+        <!-- Fő footer tartalom -->
+        <div class="max-w-7xl mx-auto px-6 py-16">
+            <div class="grid md:grid-cols-4 gap-12">
+
+                <!-- 1. oszlop: Cég info -->
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div
+                            class="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center text-2xl backdrop-blur-sm">
+                            <img src="images/image.jpg" alt="Balogh Szerkezet 1977 Kft.">
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold tracking-tight">Balogh Szerkezet</h3>
+                            <p class="text-xs text-white/60">1977 Kft.</p>
+                        </div>
+                    </div>
+                    <p class="text-white/70 text-sm leading-relaxed mb-6">
+                        Minőségi építőipari szolgáltatások 1977 óta. Több mint 120 sikeres projekt.
+                    </p>
+                    <!--
+                    <div class="flex gap-4">
+                        <a href="#"
+                            class="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition">
+                            <i class="fa-brands fa-facebook-f text-sm"></i>
+                        </a>
+                        <a href="#"
+                            class="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition">
+                            <i class="fa-brands fa-instagram text-sm"></i>
+                        </a>
+                        <a href="#"
+                            class="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition">
+                            <i class="fa-brands fa-linkedin-in text-sm"></i>
+                        </a>
+                        <a href="#"
+                            class="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition">
+                            <i class="fa-brands fa-youtube text-sm"></i>
+                        </a>
+                    </div>-->
+                </div>
+
+                <!-- 2. oszlop: Gyors linkek -->
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Gyors menü</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#szolgaltatasok"
+                                class="text-white/70 hover:text-white hover:pl-2 transition-all flex items-center gap-2"><i
+                                    class="fa-solid fa-chevron-right text-xs text-teal-400"></i>Szolgáltatások</a></li>
+                        <li><a href="#projektek"
+                                class="text-white/70 hover:text-white hover:pl-2 transition-all flex items-center gap-2"><i
+                                    class="fa-solid fa-chevron-right text-xs text-teal-400"></i>Projektek</a></li>
+                        <li><a href="#rolunk"
+                                class="text-white/70 hover:text-white hover:pl-2 transition-all flex items-center gap-2"><i
+                                    class="fa-solid fa-chevron-right text-xs text-teal-400"></i>Rólunk</a></li>
+                        <li><a href="#kapcsolat"
+                                class="text-white/70 hover:text-white hover:pl-2 transition-all flex items-center gap-2"><i
+                                    class="fa-solid fa-chevron-right text-xs text-teal-400"></i>Kapcsolat</a></li>
+                        <li><a href="#ertekelesek"
+                                class="text-white/70 hover:text-white hover:pl-2 transition-all flex items-center gap-2"><i
+                                    class="fa-solid fa-chevron-right text-xs text-teal-400"></i>Vélemények</a></li>
+                    </ul>
+                </div>
+
+                <!-- 3. oszlop: Kapcsolat -->
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Kapcsolat</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-phone text-teal-400 mt-1"></i>
+                            <div>
+                                <p class="text-white/60 text-xs">Hívjon minket</p>
+                                <a href="tel:+36705501339" class="text-white hover:text-teal-300 transition">+36 70 550
+                                    1339</a>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-teal-400 mt-1"></i>
+                            <div>
+                                <p class="text-white/60 text-xs">Írjon nekünk</p>
+                                <a href="mailto:balogh.sandor7704@gmail.com"
+                                    class="text-white hover:text-teal-300 transition break-all">balogh.sandor7704@gmail.com</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 4. oszlop: Nyitvatartás + CTA -->
+                <div><!-- 
+                    <h4 class="font-bold text-lg mb-6">Nyitvatartás</h4>
+                    <div class="space-y-2 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-white/60">Hétfő - Péntek</span>
+                            <span class="text-white">08:00 - 17:00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-white/60">Szombat</span>
+                            <span class="text-white/60">Zárva</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-white/60">Vasárnap</span>
+                            <span class="text-white/60">Zárva</span>
+                        </div>
+                    </div> -->
+                    <div class="bg-white/10 rounded-2xl p-4 text-center">
+                        <p class="text-sm text-white/80 mb-3">Kérjen ingyenes árajánlatot!</p>
+                        <a href="#kapcsolat"
+                            class="block bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 rounded-xl transition text-center">
+                            Ajánlatkérés →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alsó sáv (copyright) -->
+        <div class="border-t border-white/10">
+            <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-white/50 text-sm">
+                    © 2026 Balogh Szerkezet 1977 Kft. · Minden jog fenntartva
+                </p>
+                <div class="flex gap-6 text-sm">
+                    <a href="adatvedelem.html" class="text-white/50 hover:text-white transition">Adatvédelmi
+                        nyilatkozat</a>
+                    <a href="cookie.html" class="text-white/50 hover:text-white transition">Cookie beállítások</a>
+                    <a href="impresszum.html" class="text-white/50 hover:text-white transition">Impresszum</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <!-- Cookie banner (első látogatáskor) -->
+    <div id="cookieBanner" class="fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t-4 border-teal-700 p-4 z-50"
+        style="display: none;">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-gray-700 text-sm">Weboldalunk cookie-kat használ a jobb felhasználói élmény érdekében. <a
+                    href="cookie.html" class="text-teal-700 underline">Részletek</a></p>
+            <div class="flex gap-3">
+                <button id="cookieAccept"
+                    class="bg-teal-700 hover:bg-teal-800 text-white px-6 py-2 rounded-xl text-sm font-semibold">Elfogadom</button>
+                <button id="cookieReject"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-xl text-sm font-semibold">Elutasítom</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const consent = localStorage.getItem('analyticsConsent');
+        const banner = document.getElementById('cookieBanner');
+        if (consent === null) banner.style.display = 'flex';
+        document.getElementById('cookieAccept')?.addEventListener('click', () => {
+            localStorage.setItem('analyticsConsent', 'true');
+            banner.style.display = 'none';
+            location.reload();
+        });
+        document.getElementById('cookieReject')?.addEventListener('click', () => {
+            localStorage.setItem('analyticsConsent', 'false');
+            banner.style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>
