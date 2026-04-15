@@ -217,11 +217,57 @@ function initReviewEvents() {
     }
 }
 
+// ========== GALÉRIA ==========
+async function loadGallery() {
+    try {
+        const response = await fetch('/api/gallery');
+        const images = await response.json();
+        const container = document.getElementById('galleryGrid');
+        if (!container) return;
+        if (images.length === 0) {
+            container.innerHTML = '<div class="col-span-full text-center text-gray-500">Még nincsenek feltöltött képek.</div>';
+            return;
+        }
+        container.innerHTML = images.map(img => `
+            <div class="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer" onclick="openModal('/gallery/${img}')">
+                <div class="relative overflow-hidden aspect-square">
+                    <img src="/gallery/${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="galéria kép">
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center">
+                        <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transition"></i>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Hiba a galéria betöltésekor:', error);
+    }
+}
+
+function openModal(src) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    modalImg.src = src;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = 'auto';
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+});
+
 // Vélemények indítása
 loadReviews();
 initStars();
 initReviewEvents();
-
+loadGallery();
 
 // ========== KAPCSOLAT ŰRLAP KEZELÉSE (saját backend) ==========
 const contactForm = document.getElementById('contactForm');

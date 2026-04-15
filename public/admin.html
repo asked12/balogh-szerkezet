@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Galéria kezelése</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        .dropzone {
+            border: 2px dashed #0f766e;
+            transition: all 0.3s;
+        }
+
+        .dropzone.drag-over {
+            background-color: #e6f7f5;
+            border-color: #0d5c54;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans p-6">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
+            <h1 class="text-3xl font-bold text-teal-900 mb-2">Galéria kezelése</h1>
+            <p class="text-gray-500 mb-6">Tölts fel képeket (JPG, PNG, WebP, max 5MB)</p>
+
+            <!-- Feltöltő űrlap -->
+            <div class="dropzone rounded-2xl p-8 text-center cursor-pointer mb-6" id="dropzone">
+                <i class="fa-solid fa-cloud-upload-alt text-5xl text-teal-600 mb-3"></i>
+                <p class="text-gray-600">Húzd ide a képeket, vagy kattints a kiválasztáshoz</p>
+                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" multiple class="hidden">
+                <button id="selectBtn" class="mt-4 bg-teal-700 hover:bg-teal-800 text-white px-6 py-2 rounded-2xl">Képek
+                    kiválasztása</button>
+            </div>
+            <div id="uploadMessage" class="text-sm mt-2"></div>
+
+            <!-- Képek listája -->
+            <h2 class="text-2xl font-bold text-teal-900 mt-8 mb-4">Feltöltött képek</h2>
+            <div id="imageList" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-xl p-8">
+            <h2 class="text-2xl font-bold text-teal-900 mb-4">Galéria megtekintése</h2>
+            <p class="text-gray-600 mb-4">A feltöltött képek a főoldalon jelennek meg. Kattints ide a megtekintéshez:
+            </p>
+            <a href="/" target="_blank"
+                class="inline-block bg-teal-700 hover:bg-teal-800 text-white px-6 py-3 rounded-2xl transition">Főoldal
+                megnyitása</a>
+        </div>
+    </div>
+
+    <script>
+        const auth = btoa('admin:galeria');  // 'Basic ' + btoa('admin:galeria')
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const selectBtn = document.getElementById('selectBtn');
+        const uploadMessage = document.getElementById('uploadMessage');
+        const imageList = document.getElementById('imageList');
+
+        // Kattintás a dropzone-ra vagy a gombra
+        dropzone.addEventListener('click', () => fileInput.click());
+        selectBtn.addEventListener('click', (e) => { e.stopPropagation(); fileInput.click(); });
+
+        // Drag & drop
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('drag-over');
+        });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length) uploadFiles(files);
+        });
+
+        // Fájlválasztás
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) uploadFiles(e.target.files);
+        });
+
+        async function uploadFiles(files) {
+            for (const file of files) {
+                if (!file.type.match('image.*')) {
+                    showMessage(`A(z) ${file.name} nem képfájl!`, 'error');
+                    continue;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    showMessage(`A(z) ${file.name} túl nagy (max 5MB)!`, 'error');
+                    continue;
+                }
+                const formData = new FormData();
+                formData.append('image', file);
+                try {
+                    const res = await fetch('/api/upload', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Basic ${auth}` },
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        showMessage(`✅ ${file.name} feltöltve!`, 'success');
+                        loadImages();
+                    } else {
+                        showMessage(`❌ Hiba: ${data.error}`, 'error');
+                    }
+                } catch (err) {
+                    showMessage(`❌ Hálózati hiba`, 'error');
+                }
+            }
+        }
+
+        async function loadImages() {
+            const res = await fetch('/api/gallery');
+            const images = await res.json();
+            if (images.length === 0) {
+                imageList.innerHTML = '<div class="col-span-full text-center text-gray-500">Még nincsenek képek.</div>';
+                return;
+            }
+            imageList.innerHTML = images.map(img => `
+                <div class="relative group rounded-xl overflow-hidden shadow-md">
+                    <img src="/gallery/${img}" class="w-full h-32 object-cover">
+                    <button onclick="deleteImage('${img}')" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-7 h-7 text-xs opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        window.deleteImage = async (filename) => {
+            if (!confirm('Biztosan törlöd ezt a képet?')) return;
+            const res = await fetch(`/api/gallery/${filename}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Basic ${auth}` }
+            });
+            if (res.ok) {
+                showMessage('✅ Kép törölve!', 'success');
+                loadImages();
+            } else {
+                showMessage('❌ Törlés sikertelen', 'error');
+            }
+        };
+
+        function showMessage(msg, type) {
+            uploadMessage.innerHTML = `<div class="p-2 rounded-xl ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${msg}</div>`;
+            setTimeout(() => uploadMessage.innerHTML = '', 3000);
+        }
+
+        loadImages();
+    </script>
+</body>
+</html>
