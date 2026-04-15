@@ -19,8 +19,7 @@
     <nav class="bg-white border-b sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between flex-wrap gap-3">
             <div class="flex items-center gap-3">
-                <div
-                    class="w-10 h-10 bg-teal-700 rounded-2xl flex items-center justify-center overflow-hidden">
+                <div class="w-10 h-10 bg-teal-700 rounded-2xl flex items-center justify-center overflow-hidden">
                     <a href="index.html"><img src="images/vn067.jpg" alt="Balogh Szerkezet 1977 Kft."></a>
                 </div>
                 <div>
@@ -137,25 +136,27 @@
     </section>
 
     <!-- GALÉRIA SZEKCIÓ -->
-<section id="galeria" class="py-24 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-12">
-            <span class="px-6 py-2 bg-amber-100 text-amber-700 text-sm font-semibold rounded-3xl">GALÉRIA</span>
-            <h2 class="text-5xl font-bold text-teal-900 mt-4">Munkáink képekben</h2>
-            <p class="text-gray-500 mt-2">Kattints a képekre a nagyításhoz</p>
+    <section id="galeria" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <span class="px-6 py-2 bg-amber-100 text-amber-700 text-sm font-semibold rounded-3xl">GALÉRIA</span>
+                <h2 class="text-5xl font-bold text-teal-900 mt-4">Munkáink képekben</h2>
+                <p class="text-gray-500 mt-2">Kattints a képekre a nagyításhoz</p>
+            </div>
+
+            <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
         </div>
+    </section>
 
-        <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    <!-- Modal nagyításhoz -->
+    <div id="imageModal" class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center p-4"
+        onclick="closeModal()">
+        <div class="relative max-w-5xl w-full" onclick="event.stopPropagation()">
+            <button onclick="closeModal()"
+                class="absolute -top-12 right-0 text-white text-3xl hover:text-gray-300 transition">✕</button>
+            <img id="modalImage" src="" class="w-full rounded-2xl shadow-2xl">
+        </div>
     </div>
-</section>
-
-<!-- Modal nagyításhoz -->
-<div id="imageModal" class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center p-4" onclick="closeModal()">
-    <div class="relative max-w-5xl w-full" onclick="event.stopPropagation()">
-        <button onclick="closeModal()" class="absolute -top-12 right-0 text-white text-3xl hover:text-gray-300 transition">✕</button>
-        <img id="modalImage" src="" class="w-full rounded-2xl shadow-2xl">
-    </div>
-</div>
 
     <section id="rolunk" class="py-24 bg-teal-900 text-white">
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
@@ -179,8 +180,13 @@
             </div>
             <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8"><i
                     class="fa-solid fa-quote-left text-7xl text-amber-400 mb-6"></i>
-                <p class="text-2xl italic">"Professzionális, pontos, megbízható csapat!"</p>
-                <div class="mt-8"><strong>Balogh Sándor</strong><br><span class="text-white/70">ügyfél</span></div>
+                <p class="text-xl italic">Főként Budapesten és vonzáskörzetében vállalunk munkát – itt vagyunk a
+                    közelben, ha otthona felújításra, bővítésre vagy új építésre szorul. Több mint 120 sikeres projekt,
+                    25 elhivatott szakember és személyre szabott garanciális feltételek biztosítják, hogy álmai otthona
+                    valóra váljon. Hívjon minket bizalommal, élje át a különbséget!</p>
+                    <p class="text-2xl italic">"Professzionális, pontos, megbízható
+                    csapat!"</p>
+                <div class="mt-8"><strong>Balogh Sándor</strong><br><span class="text-white/70">Tulajdonos</span></div>
             </div>
         </div>
     </section>
@@ -264,13 +270,13 @@
                 <!-- 1. oszlop: Cég info -->
                 <div>
                     <div class="flex items-center gap-3 mb-6">
-                        <div
-                            class="w-10 h-10 bg-teal-700 rounded-2xl flex items-center justify-center overflow-hidden">
+                        <div class="w-10 h-10 bg-teal-700 rounded-2xl flex items-center justify-center overflow-hidden">
                             <img src="images/vn067.jpg" alt="Balogh Szerkezet 1977 Kft.">
                         </div>
                         <div>
                             <h3 class="text-xl font-bold tracking-tight">Balogh Szerkezet</h3>
-                            <p class="text-xs text-white/60">1977 <a href="admin.html" class="hover:underline">Kft.</a></p>
+                            <p class="text-xs text-white/60">1977 <a href="admin.html" class="hover:underline">Kft.</a>
+                            </p>
                         </div>
                     </div>
                     <p class="text-white/70 text-sm leading-relaxed mb-6">
