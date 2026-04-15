@@ -20,10 +20,21 @@ function escapeHtml(str) {
 }
 
 // ========== AUTO-HIDE HEADER ==========
-let lastScrollY = 0;
+let lastScroll = 0;
 const header = document.querySelector('nav');
 if (header) {
     header.style.transition = 'transform 0.3s ease';
+    window.addEventListener('scroll', () => {
+        const current = window.scrollY;
+        if (current > 80 && current > lastScroll) {
+            header.style.transform = 'translateY(-100%)';
+        } else if (current < lastScroll || current <= 10) {
+            header.style.transform = 'translateY(0)';
+        }
+        if (current > 50) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+        lastScroll = current;
+    });
 }
 
 // (Nav scrolled state handled in optimized scroll handler below)
@@ -211,40 +222,6 @@ loadReviews();
 initStars();
 initReviewEvents();
 
-
-// Scroll esemény optimalizálása (javítva)
-let scrollTimeout;
-function handleScroll() {
-    const currentScrollY = window.scrollY;
-    const scrollingDown = currentScrollY > lastScrollY;
-    const scrolledPastThreshold = currentScrollY > 80;
-
-    if (!header) {
-        lastScrollY = currentScrollY;
-        return;
-    }
-
-    if (scrollingDown && scrolledPastThreshold) {
-        header.style.transform = 'translateY(-100%)';
-    } else if (!scrollingDown || currentScrollY <= 10) {
-        header.style.transform = 'translateY(0)';
-    }
-
-    if (currentScrollY > 50) header.classList.add('scrolled');
-    else header.classList.remove('scrolled');
-
-    lastScrollY = currentScrollY;
-}
-
-window.addEventListener('scroll', () => {
-    if (scrollTimeout) cancelAnimationFrame(scrollTimeout);
-    scrollTimeout = requestAnimationFrame(handleScroll);
-});
-
-// Oldal betöltésekor
-window.addEventListener('load', () => {
-    if (header) header.style.transform = 'translateY(0)';
-});
 
 // ========== KAPCSOLAT ŰRLAP KEZELÉSE (saját backend) ==========
 const contactForm = document.getElementById('contactForm');
