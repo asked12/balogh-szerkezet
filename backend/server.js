@@ -219,6 +219,15 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // max 5MB
 
+// ========== ADMIN HITELESÍTÉS ==========
+const adminAuth = (req, res, next) => {
+    const auth = req.headers.authorization;
+    const expected = 'Basic ' + Buffer.from('admin:galeria').toString('base64');
+    if (auth === expected) return next();
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin"');
+    res.status(401).json({ error: 'Unauthorized' });
+};
+
 // ========== API ENDPOINTOK ==========
 
 app.get('/api/reviews', async (req, res) => {
