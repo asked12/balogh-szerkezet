@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const compression = require('compression');
+const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const fs = require('fs');
 require('dotenv').config();
@@ -202,22 +203,25 @@ const transporter = nodemailer.createTransport({
 });
 const EMAIL_TO = process.env.EMAIL_TO || 'tomibt66@gmail.com';
 
+// Cloudinary konfiguráció
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 // Galéria mappa (a public/gallery mappában)
 const galleryDir = path.join(__dirname, '../public/gallery');
 if (!fs.existsSync(galleryDir)) {
     fs.mkdirSync(galleryDir, { recursive: true });
 }
 
-// Multer beállítás – csak képek fogadása
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, galleryDir),
-    filename: (req, file, cb) => {
-        const unique = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, unique + ext);
-    }
+/// Multer memory storage (nem mentjük a szerverre)
+const storage = multer.memoryStorage();
+const upload = multer({ 
+    storage, 
+    limits: { fileSize: 5 * 1024 * 1024 } // max 5MB
 });
-const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // max 5MB
 
 // ========== ADMIN HITELESÍTÉS ==========
 const adminAuth = (req, res, next) => {
@@ -320,28 +324,60 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
-// 1. Képek listájának lekérése (nyilvános)
-app.get('/api/gallery', (req, res) => {
-    fs.readdir(galleryDir, (err, files) => {
-        if (err) return res.status(500).json({ error: err.message });
-        const images = files.filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f));
+// Galéria lekérése (Cloudinary-ról)
+app.get('/api/gallery', async (req, res) => {
+    try {
+        const result = await cloudinary.search
+            .expression('folder:balogh-szerkezet')
+            .sort_by('created_at', 'desc')
+            .max_results(100)
+            .execute();
+
+        const images = result.resources.map(resource => ({
+            public_id: resource.public_id,
+            url: resource.secure_url
+        }));
+
         res.json(images);
-    });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-// 2. Kép feltöltése (admin)
-app.post('/api/upload', adminAuth, upload.single('image'), (req, res) => {
+// Kép feltöltése Cloudinary-ra (admin)
+app.post('/api/upload', adminAuth, upload.single('image'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'Nincs fájl' });
-    res.json({ success: true, filename: req.file.filename });
+
+    try {
+        // Base64 konvertálás
+        const b64 = Buffer.from(req.file.buffer).toString('base64');
+        const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+
+        const result = await cloudinary.uploader.upload(dataURI, {
+            folder: 'balogh-szerkezet',   // létrehoz egy mappát Cloudinary-n
+            use_filename: true,
+            unique_filename: true,
+        });
+
+        res.json({ 
+            success: true, 
+            filename: result.public_id, 
+            url: result.secure_url 
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Cloudinary feltöltési hiba' });
+    }
 });
 
-// 3. Kép törlése (admin)
-app.delete('/api/gallery/:filename', adminAuth, (req, res) => {
-    const filePath = path.join(galleryDir, req.params.filename);
-    fs.unlink(filePath, (err) => {
-        if (err) return res.status(500).json({ error: err.message });
+// Kép törlése Cloudinary-ról
+app.delete('/api/gallery/:public_id', adminAuth, async (req, res) => {
+    try {
+        await cloudinary.uploader.destroy(req.params.public_id);
         res.json({ success: true });
-    });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 app.listen(PORT, () => {
