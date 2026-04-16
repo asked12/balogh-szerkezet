@@ -52,22 +52,18 @@
     </div>
 
     <script>
-        const auth = btoa('admin:galeria');  // 'Basic ' + btoa('admin:galeria')
+        const auth = btoa('admin:galeria');
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('fileInput');
         const selectBtn = document.getElementById('selectBtn');
         const uploadMessage = document.getElementById('uploadMessage');
         const imageList = document.getElementById('imageList');
 
-        // Kattintás a dropzone-ra vagy a gombra
+        // Kattintás és drag & drop (maradhat ugyanaz)
         dropzone.addEventListener('click', () => fileInput.click());
         selectBtn.addEventListener('click', (e) => { e.stopPropagation(); fileInput.click(); });
 
-        // Drag & drop
-        dropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropzone.classList.add('drag-over');
-        });
+        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag-over'); });
         dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
         dropzone.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -76,7 +72,6 @@
             if (files.length) uploadFiles(files);
         });
 
-        // Fájlválasztás
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length) uploadFiles(e.target.files);
         });
@@ -91,8 +86,10 @@
                     showMessage(`A(z) ${file.name} túl nagy (max 5MB)!`, 'error');
                     continue;
                 }
+
                 const formData = new FormData();
                 formData.append('image', file);
+
                 try {
                     const res = await fetch('/api/upload', {
                         method: 'POST',
@@ -100,6 +97,7 @@
                         body: formData
                     });
                     const data = await res.json();
+
                     if (data.success) {
                         showMessage(`✅ ${file.name} feltöltve!`, 'success');
                         loadImages();
@@ -113,25 +111,33 @@
         }
 
         async function loadImages() {
-            const res = await fetch('/api/gallery');
-            const images = await res.json();
-            if (images.length === 0) {
-                imageList.innerHTML = '<div class="col-span-full text-center text-gray-500">Még nincsenek képek.</div>';
-                return;
-            }
-            imageList.innerHTML = images.map(img => `
+            try {
+                const res = await fetch('/api/gallery');
+                const images = await res.json();
+
+                if (images.length === 0) {
+                    imageList.innerHTML = '<div class="col-span-full text-center text-gray-500">Még nincsenek feltöltött képek.</div>';
+                    return;
+                }
+
+                imageList.innerHTML = images.map(img => `
                 <div class="relative group rounded-xl overflow-hidden shadow-md">
-                    <img src="/gallery/${img}" class="w-full h-32 object-cover">
-                    <button onclick="deleteImage('${img}')" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-7 h-7 text-xs opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                    <img src="${img.url}" class="w-full h-32 object-cover">
+                    <button onclick="deleteImage('${img.public_id}')"
+                            class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-7 h-7 text-xs opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
             `).join('');
+            } catch (err) {
+                console.error('Hiba a képek betöltésekor:', err);
+                imageList.innerHTML = '<div class="col-span-full text-center text-red-500">Hiba történt a képek betöltésekor.</div>';
+            }
         }
 
-        window.deleteImage = async (filename) => {
+        window.deleteImage = async (public_id) => {
             if (!confirm('Biztosan törlöd ezt a képet?')) return;
-            const res = await fetch(`/api/gallery/${filename}`, {
+            const res = await fetch(`/api/gallery/${public_id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Basic ${auth}` }
             });
@@ -151,4 +157,5 @@
         loadImages();
     </script>
 </body>
+
 </html>
