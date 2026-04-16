@@ -71,6 +71,13 @@ nav.scrolled {
     border-bottom-color: rgba(15, 118, 110, 0.3);
 }
 
+/* Rólunk szekció – mobil szövegtörés */
+#rolunk .bg-white\/10 {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
 @media (max-width: 768px) {
     nav .max-w-7xl {
         padding-top: 16px;
@@ -84,6 +91,10 @@ nav.scrolled {
         flex-direction: column;
         width: 100%;
         gap: 12px;
+    }
+    #rolunk .bg-white\/10 p {
+        font-size: 0.9rem;
+        line-height: 1.4;
     }
 }
 
