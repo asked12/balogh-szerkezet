@@ -159,39 +159,43 @@
     </div>
 
     <section id="rolunk" class="py-24 bg-teal-900 text-white">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-        <div>
-            <span class="px-6 py-2 bg-white/20 rounded-full text-sm font-semibold">RÓLUNK</span>
-            <h2 class="text-4xl md:text-5xl font-bold mt-4">35+ éve építjük Magyarországot</h2>
-            <p class="text-lg md:text-xl text-white/80 mt-6">Több mint 120 projektet adtunk át teljes elégedettséggel.</p>
-            <div class="grid grid-cols-3 gap-4 md:gap-8 mt-12 text-center">
-                <div>
-                    <div class="text-4xl md:text-5xl font-bold text-amber-400">120+</div>
-                    <div class="text-sm md:text-base">projekt</div>
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <span class="px-6 py-2 bg-white/20 rounded-full text-sm font-semibold">RÓLUNK</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4">35+ éve építjük Magyarországot</h2>
+                <p class="text-lg md:text-xl text-white/80 mt-6">Több mint 120 projektet adtunk át teljes
+                    elégedettséggel.</p>
+                <div class="grid grid-cols-3 gap-4 md:gap-8 mt-12 text-center">
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold text-amber-400">120+</div>
+                        <div class="text-sm md:text-base">projekt</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold text-amber-400">25</div>
+                        <div class="text-sm md:text-base">szakember</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold text-amber-400">garancia</div>
+                        <div class="text-sm md:text-base">egyeztetés szerinti</div>
+                    </div>
                 </div>
-                <div>
-                    <div class="text-4xl md:text-5xl font-bold text-amber-400">25</div>
-                    <div class="text-sm md:text-base">szakember</div>
-                </div>
-                <div>
-                    <div class="text-4xl md:text-5xl font-bold text-amber-400">garancia</div>
-                    <div class="text-sm md:text-base">egyeztetés szerinti</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-6 md:p-8">
+                <i class="fa-solid fa-quote-left text-6xl md:text-7xl text-amber-400 mb-4 md:mb-6"></i>
+                <p class="text-base md:text-xl italic leading-relaxed">
+                    Főként Budapesten és vonzáskörzetében vállalunk munkát – itt vagyunk a közelben, ha otthona
+                    felújításra, bővítésre vagy új építésre szorul. Több mint 120 sikeres projekt, 25 elhivatott
+                    szakember és személyre szabott garanciális feltételek biztosítják, hogy álmai otthona valóra váljon.
+                    Hívjon minket bizalommal, élje át a különbséget!
+                </p>
+                <p class="text-xl md:text-2xl italic mt-6 md:mt-8">"Professzionális, pontos, megbízható csapat!"</p>
+                <div class="mt-6 md:mt-8">
+                    <strong>Balogh Sándor</strong><br>
+                    <span class="text-white/70 text-sm md:text-base">Tulajdonos</span>
                 </div>
             </div>
         </div>
-        <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-6 md:p-8">
-            <i class="fa-solid fa-quote-left text-6xl md:text-7xl text-amber-400 mb-4 md:mb-6"></i>
-            <p class="text-base md:text-xl italic leading-relaxed">
-                Főként Budapesten és vonzáskörzetében vállalunk munkát – itt vagyunk a közelben, ha otthona felújításra, bővítésre vagy új építésre szorul. Több mint 120 sikeres projekt, 25 elhivatott szakember és személyre szabott garanciális feltételek biztosítják, hogy álmai otthona valóra váljon. Hívjon minket bizalommal, élje át a különbséget!
-            </p>
-            <p class="text-xl md:text-2xl italic mt-6 md:mt-8">"Professzionális, pontos, megbízható csapat!"</p>
-            <div class="mt-6 md:mt-8">
-                <strong>Balogh Sándor</strong><br>
-                <span class="text-white/70 text-sm md:text-base">Tulajdonos</span>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
     <section id="kapcsolat" class="py-24 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
@@ -220,8 +224,15 @@
                         id="contactEmail" placeholder="Email" required
                         class="w-full p-4 border rounded-2xl mb-4"><textarea id="contactMessage" rows="4"
                         placeholder="Milyen munkáról van szó?" required
-                        class="w-full p-4 border rounded-2xl mb-4"></textarea><button type="submit"
-                        id="contactSubmitBtn"
+                        class="w-full p-4 border rounded-2xl mb-4"></textarea>
+                    <div class="flex items-start gap-2 mt-4 text-sm">
+                        <input type="checkbox" id="checkboxGdprConsent" class="mt-1" required>
+                        <label for="checkboxGdprConsent">Elfogadom az <a href="adatvedelem.html" class="text-teal-700 underline">Adatvédelmi
+                                tájékoztatót</a>
+                            és az <a href="aszf.html" class="text-teal-700 underline">ÁSZF-et</a>,
+                            valamint hozzájárulok az adataim kezeléséhez.</label>
+                    </div>
+                    <button type="submit" id="contactSubmitBtn"
                         class="w-full bg-teal-700 text-white py-4 rounded-2xl font-bold text-xl">KÜLDÉS →</button>
                     <div id="contactStatus" class="hidden mt-4 text-center"></div>
                 </form>
@@ -253,8 +264,18 @@
                                 data-value="4" class="star">★</span><span data-value="5" class="star">★</span></div>
                         <input type="hidden" id="reviewStars" value="5">
                     </div><textarea id="reviewText" rows="3" placeholder="Írd le a véleményed..."
-                        class="w-full p-4 border rounded-2xl mb-4" required></textarea><button type="submit"
-                        class="bg-teal-700 text-white px-8 py-3 rounded-2xl font-bold">Vélemény elküldése</button>
+                        class="w-full p-4 border rounded-2xl mb-4" required></textarea>
+                    <div class="flex items-start gap-2 mt-4 text-sm">
+                        <input type="checkbox" id="reviewGdprConsent" class="mt-1" required>
+                        <label for="reviewGdprConsent">
+                            Elfogadom az <a href="adatvedelem.html" class="text-teal-700 underline">Adatvédelmi
+                                tájékoztatót</a>
+                            és az <a href="aszf.html" class="text-teal-700 underline">ÁSZF-et</a>,
+                            valamint hozzájárulok az adataim kezeléséhez.
+                        </label>
+                    </div>
+                    <button type="submit" class="bg-teal-700 text-white px-8 py-3 rounded-2xl font-bold">Vélemény
+                        elküldése</button>
                 </form>
             </div>
             <div id="allReviewsContainer" class="grid md:grid-cols-3 gap-6"></div>
@@ -389,41 +410,92 @@
                         nyilatkozat</a>
                     <a href="cookie.html" class="text-white/50 hover:text-white transition">Cookie beállítások</a>
                     <a href="impresszum.html" class="text-white/50 hover:text-white transition">Impresszum</a>
+                    <a href="aszf.html" class="text-white/50 hover:text-white transition">ÁSZF</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="script.js"></script>
-    <!-- Cookie banner (első látogatáskor) -->
-    <div id="cookieBanner" class="fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t-4 border-teal-700 p-4 z-50"
-        style="display: none;">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <p class="text-gray-700 text-sm">Weboldalunk cookie-kat használ a jobb felhasználói élmény érdekében. <a
-                    href="cookie.html" class="text-teal-700 underline">Részletek</a></p>
-            <div class="flex gap-3">
-                <button id="cookieAccept"
-                    class="bg-teal-700 hover:bg-teal-800 text-white px-6 py-2 rounded-xl text-sm font-semibold">Elfogadom</button>
+
+    <!-- Cookie banner – javított verzió -->
+    <div id="cookieBanner"
+        class="fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t-4 border-teal-700 p-5 z-50 hidden">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <p class="text-gray-700 text-sm flex-1">
+                Weboldalunk cookie-kat használ a jobb élmény érdekében, beleértve a Google Analytics analitikai sütijeit
+                is.
+                <a href="cookie.html" class="text-teal-700 underline font-medium">Részletek és beállítások</a>
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <button id="cookieSettings" onclick="window.location.href='cookie.html'"
+                    class="bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 px-6 py-2.5 rounded-2xl text-sm font-medium">
+                    Beállítások
+                </button>
                 <button id="cookieReject"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-xl text-sm font-semibold">Elutasítom</button>
+                    class="bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 px-6 py-2.5 rounded-2xl text-sm font-medium">
+                    Elutasítom
+                </button>
+                <button id="cookieAccept"
+                    class="bg-teal-700 hover:bg-teal-800 text-white px-7 py-2.5 rounded-2xl text-sm font-semibold">
+                    Elfogadom az összeset
+                </button>
             </div>
         </div>
     </div>
 
     <script>
-        const consent = localStorage.getItem('analyticsConsent');
-        const banner = document.getElementById('cookieBanner');
-        if (consent === null) banner.style.display = 'flex';
-        document.getElementById('cookieAccept')?.addEventListener('click', () => {
-            localStorage.setItem('analyticsConsent', 'true');
-            banner.style.display = 'none';
-            location.reload();
+    // === COOKIE BANNER ÉS GOOGLE ANALYTICS KEZELÉS ===
+
+    function loadGoogleAnalytics() {
+        if (typeof gtag !== 'undefined') return;
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-JD0P8F10D6';
+        document.head.appendChild(script);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-JD0P8F10D6');
+    }
+
+    function deleteAnalyticsCookies() {
+        document.cookie.split(';').forEach(c => {
+            const name = c.split('=')[0].trim();
+            if (name.includes('_ga') || name.includes('_gid')) {
+                document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+            }
         });
-        document.getElementById('cookieReject')?.addEventListener('click', () => {
-            localStorage.setItem('analyticsConsent', 'false');
-            banner.style.display = 'none';
-        });
-    </script>
+    }
+
+    // Banner megjelenítése
+    const banner = document.getElementById('cookieBanner');
+    const consent = localStorage.getItem('analyticsConsent');
+
+    if (consent === null) {
+        banner.classList.remove('hidden');
+        banner.style.display = 'block';
+    } else if (consent === 'true') {
+        loadGoogleAnalytics();
+    }
+
+    // Elfogadom az összeset
+    document.getElementById('cookieAccept')?.addEventListener('click', () => {
+        localStorage.setItem('analyticsConsent', 'true');
+        banner.style.display = 'none';
+        loadGoogleAnalytics();
+    });
+
+    // Elutasítom
+    document.getElementById('cookieReject')?.addEventListener('click', () => {
+        localStorage.setItem('analyticsConsent', 'false');
+        banner.style.display = 'none';
+        deleteAnalyticsCookies();
+    });
+
+    // Beállítások gomb (cookie.html-re visz) – már a HTML-ben van
+</script>
+    <script src="script.js"></script>
 </body>
 
 </html>

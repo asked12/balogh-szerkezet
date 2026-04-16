@@ -321,20 +321,5 @@ if (contactForm) {
     });
 }
 
-// Google Analytics betöltése a főoldalon, ha a felhasználó hozzájárult
-function loadGAOnMainPage() {
-    const consent = localStorage.getItem('analyticsConsent');
-    if (consent === 'true') {
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-JD0P8F10D6';
-        document.head.appendChild(script);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-JD0P8F10D6');
-    }
-}
-loadGAOnMainPage();
 
 console.log('%c✅ Balogh Szerkezet weboldal – Backenddel működik!', 'background:#0f766e;color:#fff;padding:6px 12px;border-radius:9999px;');
