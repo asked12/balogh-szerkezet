@@ -109,11 +109,11 @@ function displayReviews() {
             loadMoreBtn.classList.remove('hidden');
         }
     } else {
-        const toShow = allReviews.slice(0, 6);
+        const toShow = allReviews.slice(0, 8);
         container.innerHTML = toShow.map(createReviewCard).join('');
         if (loadMoreBtn) {
-            if (allReviews.length > 6) {
-                loadMoreBtn.textContent = `További vélemények mutatása (${allReviews.length - 6} db)`;
+            if (allReviews.length > 8) {
+                loadMoreBtn.textContent = `További vélemények mutatása (${allReviews.length - 8} db)`;
                 loadMoreBtn.classList.remove('hidden');
             } else {
                 loadMoreBtn.classList.add('hidden');
