@@ -273,6 +273,21 @@ app.post('/api/reviews', async (req, res) => {
     }
 });
 
+// Vélemény törlése (admin)
+app.delete('/api/reviews/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (process.env.DATABASE_URL) {
+            await db.query('DELETE FROM reviews WHERE id = $1', [id]);
+        } else {
+            await db.run('DELETE FROM reviews WHERE id = ?', [id]);
+        }
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.post('/api/contact', async (req, res) => {
     const { name, email, phone, message } = req.body;
     try {
