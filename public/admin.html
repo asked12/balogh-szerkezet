@@ -121,33 +121,32 @@
                 }
 
                 imageList.innerHTML = images.map(img => `
-                <div class="relative group rounded-xl overflow-hidden shadow-md">
-                    <img src="${img.url}" class="w-full h-32 object-cover">
-                    <button onclick="deleteImage('${img.public_id}')"
-                            class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-7 h-7 text-xs opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div>
-            `).join('');
+    <div class="relative group rounded-xl overflow-hidden shadow-md">
+        <img src="${img.url}" class="w-full h-32 object-cover">
+        <button onclick="deleteImage('${img.publicId}')" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-7 h-7 text-xs opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+            <i class="fa-solid fa-trash"></i>
+        </button>
+    </div>
+`).join('');
             } catch (err) {
                 console.error('Hiba a képek betöltésekor:', err);
                 imageList.innerHTML = '<div class="col-span-full text-center text-red-500">Hiba történt a képek betöltésekor.</div>';
             }
         }
 
-        window.deleteImage = async (public_id) => {
-            if (!confirm('Biztosan törlöd ezt a képet?')) return;
-            const res = await fetch(`/api/gallery/${public_id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Basic ${auth}` }
-            });
-            if (res.ok) {
-                showMessage('✅ Kép törölve!', 'success');
-                loadImages();
-            } else {
-                showMessage('❌ Törlés sikertelen', 'error');
-            }
-        };
+        window.deleteImage = async (publicId) => {
+    if (!confirm('Biztosan törlöd ezt a képet?')) return;
+    const res = await fetch(`/api/gallery/${publicId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Basic ${auth}` }
+    });
+    if (res.ok) {
+        showMessage('✅ Kép törölve!', 'success');
+        loadImages();
+    } else {
+        showMessage('❌ Törlés sikertelen', 'error');
+    }
+};
 
         function showMessage(msg, type) {
             uploadMessage.innerHTML = `<div class="p-2 rounded-xl ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${msg}</div>`;

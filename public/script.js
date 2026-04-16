@@ -224,20 +224,40 @@ async function loadGallery() {
         const images = await response.json();
         const container = document.getElementById('galleryGrid');
         if (!container) return;
+        
         if (images.length === 0) {
             container.innerHTML = '<div class="col-span-full text-center text-gray-500">Még nincsenek feltöltött képek.</div>';
             return;
         }
-        container.innerHTML = images.map(img => `
-            <div class="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer" onclick="openModal('/gallery/${img}')">
-                <div class="relative overflow-hidden aspect-square">
-                    <img src="/gallery/${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="galéria kép">
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center">
-                        <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transition"></i>
+        
+        // Ellenőrizzük, hogy a válasz string (fájlrendszer) vagy objektum (Cloudinary)
+        const isCloudinary = images.length > 0 && typeof images[0] === 'object';
+        
+        if (isCloudinary) {
+            // Cloudinary verzió: az img objektum tartalmazza az url-t
+            container.innerHTML = images.map(img => `
+                <div class="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer" onclick="openModal('${img.url}')">
+                    <div class="relative overflow-hidden aspect-square">
+                        <img src="${img.url}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="galéria kép">
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transition"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
+        } else {
+            // Fájlrendszer verzió: az img egy string (fájlnév)
+            container.innerHTML = images.map(img => `
+                <div class="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer" onclick="openModal('/gallery/${img}')">
+                    <div class="relative overflow-hidden aspect-square">
+                        <img src="/gallery/${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="galéria kép">
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transition"></i>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
     } catch (error) {
         console.error('Hiba a galéria betöltésekor:', error);
     }
