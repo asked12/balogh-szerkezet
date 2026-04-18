@@ -201,7 +201,7 @@ const transporter = nodemailer.createTransport({
         pass: process.env.SMTP_PASS
     }
 });
-const EMAIL_TO = process.env.EMAIL_TO || 'tomibt66@gmail.com';
+const EMAIL_TO = process.env.EMAIL_TO || 'balogh.sandor7704@gmail.com';
 
 // Cloudinary konfiguráció
 cloudinary.config({
